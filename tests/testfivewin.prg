@@ -1,76 +1,41 @@
-/*
-TESTRMCHART
-José Quintas
-*/
 
 #include "ze_rmchart.ch"
-#include "hbgtinfo.ch"
-#include "inkey.ch"
+#include "FiveWin.Ch"
+#define MAX_SIZE_ONE 800
+#DEFINE MAX_SIZE_TWO 600
 
-#define MAX_SIZE_ONE oCrt:CurrentSize[ 1 ]
-#define MAX_SIZE_TWO oCrt:CurrentSize[ 2 ]
+FUNCTION MAIN()
 
-FUNCTION Main()
+   LOCAL oDlg, oFld
 
-   LOCAL oRmChart, oCrt1, nOpc := 1, nTemp
+   FW_SetTruePixel( .T. )
 
-   SetMode(40,100)
-   SET WRAP ON
-   SetColor( "W/B" )
-   CLS
-   hb_ThreadStart( { || tstRMChart() } )
-   oRmChart := RMChartClass():New()
-   oCrt1 := wvgTstRectangle():New( , , { 0, -20 }, { -MaxRow() - 1, -MaxCol() + 19 } )
-   oCrt1:Create()
+   DEFINE DIALOG oDlg TITLE "Pruebas" SIZE 1024, 748 PIXEL
 
-   DO WHILE .T.
-      @ 0, 0 SAY ""
-      @ Row() + 1, 1 PROMPT " Single Bars (10)"
-      @ Row() + 1, 1 PROMPT " Grouped Bars (1)"
-      @ Row() + 1, 1 PROMPT " Four Regions (2) "
-      @ Row() + 1, 1 PROMPT " Pyramid (3) "
-      @ Row() + 1, 1 PROMPT " Single Bars (4) "
-      @ Row() + 1, 1 PROMPT " Donut (5) "
-      @ Row() + 1, 1 PROMPT " Stacked Bars (6) "
-      @ Row() + 1, 1 PROMPT " Grouped Bars (7) "
-      @ Row() + 1, 1 PROMPT " Single Bars (8) "
-      @ Row() + 1, 1 PROMPT " Pie (9) "
-      MENU TO nOpc
-      nTemp := 1
-      DO CASE
-      CASE LastKey() == K_ESC ; EXIT
-      CASE nOpc == nTemp++ ; Graphic10( oCrt1, oRMChart, 1 )
-      CASE nOpc == nTemp++ ; Graphic1(  oCrt1, oRMChart, 1 )
-      CASE nOpc == nTemp++ ; Graphic2(  oCrt1, oRMChart, 1 )
-      CASE nOpc == nTemp++ ; Graphic3(  oCrt1, oRMChart, 1 )
-      CASE nOpc == nTemp++ ; Graphic4(  oCrt1, oRmChart, 1 )
-      CASE nOpc == nTemp++ ; Graphic5(  oCrt1, oRmChart, 1 )
-      CASE nOpc == nTemp++ ; Graphic6(  oCrt1, oRmChart, 1 )
-      CASE nOpc == nTemp++ ; Graphic7(  oCrt1, oRmChart, 1 )
-      CASE nOpc == nTemp++ ; Graphic8(  oCrt1, oRmChart, 1 )
-      CASE nOpc == nTemp++ ; Graphic9(  oCrt1, oRMChart, 1 )
-      CASE nOpc == nTemp // dummy
-      ENDCASE
-   ENDDO
-   //oRmChart:DeleteChart(1)
-   //oRMChart:Destroy()
+   @ 0,0 FOLDEREX oFld PROMPT "A", "B", "C", "D", "E", "F", "G", "H", "I", "J" SIZE 900, 700 OF oDlg PIXEL
+
+   ACTIVATE DIALOG oDlg CENTER ON INIT ( (Self), DrawAll( oFld ) )
 
    RETURN NIL
 
-FUNCTION AMax( x )
+FUNCTION DrawAll( oFld )
 
-   LOCAL nVal, oElement
+   LOCAL oRmChart := RMChartClass():New()
 
-   nVal := x[ 1 ]
-   FOR EACH oElement IN x
-      IF oElement > nVal
-         nVal := oElement
-      ENDIF
-   NEXT
+   Graphic1(  ( oFld:aDialogs[1]:hWnd ), oRMChart, 1 )
+   Graphic2(  ( oFld:aDialogs[2]:hWnd ), oRMChart, 2 )
+   Graphic3(  ( oFld:aDialogs[3]:hWnd ), oRMChart, 3 )
+   Graphic4(  ( oFld:aDialogs[4]:hWnd ), oRmChart, 4 )
+   Graphic5(  ( oFld:aDialogs[5]:hWnd ), oRmChart, 5 )
+   Graphic6(  ( oFld:aDialogs[6]:hWnd ), oRmChart, 6 )
+   Graphic7(  ( oFld:aDialogs[7]:hWnd ), oRmChart, 7 )
+   Graphic8(  ( oFld:aDialogs[8]:hWnd ), oRmChart, 8 )
+   Graphic9(  ( oFld:aDialogs[9]:hWnd ), oRMChart, 9 )
+   Graphic10( ( oFld:aDialogs[10]:hWnd ), oRMChart, 10 )
 
-   RETURN nVal
+   RETURN Nil
 
-FUNCTION Graphic1( oCrt, oRMChart, nIdChart )
+FUNCTION Graphic1( hWnd, oRMChart, nIdChart )
 
    LOCAL cLegenda, cLabels, cTitulo, aDados, cImagem, cUnidade, cTextoVert, nMax, oElement, nCont
 
@@ -92,7 +57,7 @@ FUNCTION Graphic1( oCrt, oRMChart, nIdChart )
 
    nMax := Round( ( Int( nMax / 10 ) * 10 ) + 10, 2 )
 
-   oRMChart:CreateChart( oCrt:hWnd, nIdChart, 0, 0, MAX_SIZE_ONE, MAX_SIZE_TWO, RMC_COLOR_AZURE, RMC_CTRLSTYLE3DLIGHT, .F., cImagem, "", 0, 0 )
+   oRMChart:CreateChart( hWnd, nIdChart, 0, 0, MAX_SIZE_ONE, MAX_SIZE_TWO, RMC_COLOR_AZURE, RMC_CTRLSTYLE3DLIGHT, .F., cImagem, "", 0, 0 )
    oRMChart:AddRegion( nIdChart, 0, 0, MAX_SIZE_ONE, MAX_SIZE_TWO, "RmChart", .F. )
    oRMChart:AddCaption( nIdChart, 1, cTitulo, RMC_COLOR_TRANSPARENT, RMC_COLOR_RED, 9, .T. )
    oRMChart:AddGrid( nIdChart, 1, RMC_COLOR_LIGHT_BLUE, .F., 20, 20, MAX_SIZE_ONE - 100, MAX_SIZE_TWO - 100, RMC_BICOLOR_LABELAXIS )
@@ -110,11 +75,11 @@ FUNCTION Graphic1( oCrt, oRMChart, nIdChart )
 
    RETURN NIL
 
-FUNCTION Graphic2( oCrt, oRMChart, ID_RMC1 )
+FUNCTION Graphic2( hWnd, oRMChart, ID_RMC1 )
 
    LOCAL sTemp1, aData1, sTemp2, sTemp3, aData2, aData3, aData4, aData5, aData6, aData7, aData8
 
-   oRMChart:CreateChart( oCrt:hWnd, ID_RMC1, 0, 0, MAX_SIZE_ONE, MAX_SIZE_TWO, RMC_COLOR_ALICE_BLUE, RMC_CTRLSTYLEFLATSHADOW, .F., "", "", 0, 0 )
+   oRMChart:CreateChart( hWnd, ID_RMC1, 0, 0, MAX_SIZE_ONE, MAX_SIZE_TWO, RMC_COLOR_ALICE_BLUE, RMC_CTRLSTYLEFLATSHADOW, .F., "", "", 0, 0 )
 
    sTemp1 := "Label 1*Label 2*Label 3*Label 4*Label 5"
    aData1 := { 30,40,70,60,20 }
@@ -162,12 +127,12 @@ FUNCTION Graphic2( oCrt, oRMChart, ID_RMC1 )
 
    RETURN NIL
 
-FUNCTION Graphic3( oCrt, oRMChart, ID_RMC1 )
+FUNCTION Graphic3( hWnd, oRMChart, ID_RMC1 )
 
    LOCAL sTemp := "Apples*Bananas*Pears*Cherries"
    LOCAL aData := { 30.25, 26.75, 15.89, 46.23 }
 
-   oRMChart:CreateChart( oCrt:hWnd, ID_RMC1, 0, 0, MAX_SIZE_ONE, MAX_SIZE_TWO, RMC_COLOR_DEFAULT, RMC_CTRLSTYLEFLAT, .F., "", "Tahoma", RMC_COLOR_DEFAULT, 0 )
+   oRMChart:CreateChart( hWnd, ID_RMC1, 0, 0, MAX_SIZE_ONE, MAX_SIZE_TWO, RMC_COLOR_DEFAULT, RMC_CTRLSTYLEFLAT, .F., "", "Tahoma", RMC_COLOR_DEFAULT, 0 )
    oRMChart:AddRegion( ID_RMC1, 0, 0, MAX_SIZE_ONE - 5, MAX_SIZE_TWO - 5, "", .F. )
    oRMChart:AddLegend( ID_RMC1, 1, sTemp, RMC_LEGEND_CUSTOM_UL, RMC_COLOR_DEFAULT, RMC_LEGENDRECTSHADOW, RMC_COLOR_DEFAULT, 8, .F. )
    oRMChart:AddGridlessSeries( ID_RMC1, 1, aData, 4, 0, 0, RMC_PYRAMIDE3, RMC_FULL, 0, .F., RMC_VLABEL_DEFAULT, RMC_HATCHBRUSH_OFF, 0 )
@@ -177,9 +142,9 @@ FUNCTION Graphic3( oCrt, oRMChart, ID_RMC1 )
 
    RETURN NIL
 
-FUNCTION Graphic4( oCrt, oRmChart, ID_RMC1 )
+FUNCTION Graphic4( hWnd, oRmChart, ID_RMC1 )
 
-   oRMChart:CreateChart( oCrt:hWnd, ID_RMC1, 0, 0, MAX_SIZE_ONE, MAX_SIZE_TWO, RMC_COLOR_TRANSPARENT, RMC_CTRLSTYLEIMAGE, .F., "seasky.jpg", "Tahoma", 0, RMC_COLOR_DEFAULT )
+   oRMChart:CreateChart( hWnd, ID_RMC1, 0, 0, MAX_SIZE_ONE, MAX_SIZE_TWO, RMC_COLOR_TRANSPARENT, RMC_CTRLSTYLEIMAGE, .F., "seasky.jpg", "Tahoma", 0, RMC_COLOR_DEFAULT )
    oRMChart:AddRegion( ID_RMC1, 5, 5, -15, -15, "", .F. )
    oRMChart:AddGrid( ID_RMC1, 1, RMC_COLOR_TRANSPARENT, .F., 0, 0, 0, 0, RMC_BICOLOR_NONE )
    oRMChart:AddDataAxis( ID_RMC1, 1, RMC_DATAAXISLEFT, 0, 100, 11, 8, RMC_COLOR_CHALK, RMC_COLOR_CHALK, RMC_LINESTYLEDOT, 0, "", "", "", RMC_TEXTCENTER )
@@ -191,12 +156,12 @@ FUNCTION Graphic4( oCrt, oRmChart, ID_RMC1 )
 
    RETURN NIL
 
-FUNCTION Graphic5( oCrt, oRmChart, ID_RMC1 )
+FUNCTION Graphic5( hWnd, oRmChart, ID_RMC1 )
 
    LOCAL aColors := { RMC_COLOR_LIGHT_GREEN, RMC_COLOR_YELLOW, RMC_COLOR_GOLDENROD, RMC_COLOR_CRIMSON }
    LOCAL aData   := { 40, 30, 60, 20 }
 
-   oRmChart:CreateChart( oCrt:hWnd, ID_RMC1, 0, 0, MAX_SIZE_ONE, MAX_SIZE_TWO, RMC_COLOR_MIDNIGHT_BLUE, RMC_CTRLSTYLEIMAGE, .F., "seasky.jpg", "Tahoma", 0, RMC_COLOR_DEFAULT )
+   oRmChart:CreateChart( hWnd, ID_RMC1, 0, 0, MAX_SIZE_ONE, MAX_SIZE_TWO, RMC_COLOR_MIDNIGHT_BLUE, RMC_CTRLSTYLEIMAGE, .F., "seasky.jpg", "Tahoma", 0, RMC_COLOR_DEFAULT )
    oRMChart:AddRegion( ID_RMC1, 5, 5, -5, -5, "", .F. )
    oRMChart:AddLegend( ID_RMC1, 1, "Apples*Citrons*Bananas*Cherries", RMC_LEGEND_CUSTOM_CENTER, RMC_COLOR_DEFAULT, RMC_LEGENDNORECT, RMC_COLOR_WHITE, 8, .F. )
    oRmChart:AddGridlessSeries( ID_RMC1, 1, aData, 4, aColors, 4, RMC_DONUT_GRADIENT, RMC_FULL, 0, .F., RMC_VLABEL_TWIN, RMC_HATCHBRUSH_OFF, 0 )
@@ -206,11 +171,11 @@ FUNCTION Graphic5( oCrt, oRmChart, ID_RMC1 )
 
    RETURN NIL
 
-FUNCTION Graphic6( oCrt, oRmChart, ID_RMC1 )
+FUNCTION Graphic6( hWnd, oRmChart, ID_RMC1 )
 
    LOCAL aData, sTemp
 
-   oRMChart:CreateChart( oCrt:hWnd, ID_RMC1, 0, 0, MAX_SIZE_ONE, MAX_SIZE_TWO, RMC_COLOR_BISQUE, RMC_CTRLSTYLE3DLIGHT, .F., "", "Tahoma", 0, RMC_COLOR_DEFAULT )
+   oRMChart:CreateChart( hWnd, ID_RMC1, 0, 0, MAX_SIZE_ONE, MAX_SIZE_TWO, RMC_COLOR_BISQUE, RMC_CTRLSTYLE3DLIGHT, .F., "", "Tahoma", 0, RMC_COLOR_DEFAULT )
    oRMChart:AddRegion( ID_RMC1, 5, 5, -5, -5, "this is the footer", .F. )
    oRMChart:AddCaption( ID_RMC1, 1, "Example of stacked bars", RMC_COLOR_BISQUE, RMC_COLOR_BLACK, 11, .F. )
    oRMChart:AddGrid( ID_RMC1, 1, RMC_COLOR_CORN_SILK, .F., 0, 0, 0, 0, RMC_BICOLOR_NONE )
@@ -233,11 +198,11 @@ FUNCTION Graphic6( oCrt, oRmChart, ID_RMC1 )
 
    RETURN NIL
 
-FUNCTION Graphic7( oCrt, oRMChart, ID_RMC1 )
+FUNCTION Graphic7( hWnd, oRMChart, ID_RMC1 )
 
    LOCAL aData, sTemp
 
-   oRmChart:CreateChart( oCrt:hWnd, ID_RMC1, 0, 0, MAX_SIZE_ONE,MAX_SIZE_TWO, RMC_COLOR_TRANSPARENT, RMC_CTRLSTYLEIMAGETILED, .F., "seasky.jpg", "Tahoma", 0, RMC_COLOR_DEFAULT )
+   oRmChart:CreateChart( hWnd, ID_RMC1, 0, 0, MAX_SIZE_ONE,MAX_SIZE_TWO, RMC_COLOR_TRANSPARENT, RMC_CTRLSTYLEIMAGETILED, .F., "seasky.jpg", "Tahoma", 0, RMC_COLOR_DEFAULT )
    oRmChart:AddRegion( ID_RMC1, 5, 5, -50, -50, "", .F. )
    oRmChart:AddGrid( ID_RMC1, 1, RMC_COLOR_TRANSPARENT, .F., 0, 0, 0, 0, RMC_BICOLOR_NONE )
    oRmChart:AddDataAxis( ID_RMC1, 1, RMC_DATAAXISLEFT, 0, 100, 11, 8, RMC_COLOR_DEFAULT, RMC_COLOR_DEFAULT, RMC_LINESTYLESOLID, 0, "", "", "", RMC_TEXTCENTER )
@@ -259,11 +224,11 @@ FUNCTION Graphic7( oCrt, oRMChart, ID_RMC1 )
 
    RETURN NIL
 
-FUNCTION Graphic8( oCrt, oRMChart, ID_RMC1 )
+FUNCTION Graphic8( hWnd, oRMChart, ID_RMC1 )
 
    LOCAL sTemp, aData
 
-   oRMChart:CreateChart( oCrt:hWnd, ID_RMC1, 0, 0, MAX_SIZE_ONE, MAX_SIZE_TWO, RMC_COLOR_ALICE_BLUE, RMC_CTRLSTYLEFLAT, .F., "", "Tahoma", 0, RMC_COLOR_DEFAULT )
+   oRMChart:CreateChart( hWnd, ID_RMC1, 0, 0, MAX_SIZE_ONE, MAX_SIZE_TWO, RMC_COLOR_ALICE_BLUE, RMC_CTRLSTYLEFLAT, .F., "", "Tahoma", 0, RMC_COLOR_DEFAULT )
    oRMChart:AddRegion( ID_RMC1, 5, 5, -50, -50, "", .F. )
    oRMChart:AddCaption( ID_RMC1, 1, "This is the chart's caption", RMC_COLOR_BLUE, RMC_COLOR_YELLOW, 11, .T. )
    oRMChart:AddGrid( ID_RMC1, 1, RMC_COLOR_WHITE, .F., 0, 0, 0, 0, RMC_BICOLOR_LABELAXIS )
@@ -278,11 +243,11 @@ FUNCTION Graphic8( oCrt, oRMChart, ID_RMC1 )
 
    RETURN NIL
 
-FUNCTION Graphic9( oCrt, oRMChart, ID_RMC1 )
+FUNCTION Graphic9( hWnd, oRMChart, ID_RMC1 )
 
    LOCAL aColor, aData, sTemp
 
-   oRMChart:CreateChart( oCrt:hWnd, ID_RMC1, 0, 0, MAX_SIZE_ONE, MAX_SIZE_TWO, RMC_COLOR_TRANSPARENT, RMC_CTRLSTYLEFLAT, .F., "", "Tahoma", 0, RMC_COLOR_DEFAULT )
+   oRMChart:CreateChart( hWnd, ID_RMC1, 0, 0, MAX_SIZE_ONE, MAX_SIZE_TWO, RMC_COLOR_TRANSPARENT, RMC_CTRLSTYLEFLAT, .F., "", "Tahoma", 0, RMC_COLOR_DEFAULT )
    ORMChart:AddRegion( ID_RMC1, 5, 5, -5, -5, "", .F. )
    aColor := { RMC_COLOR_MAROON, RMC_COLOR_MEDIUM_BLUE, RMC_COLOR_CRIMSON, RMC_COLOR_DEFAULT }
    aData := { 80, 50, 60, 30 }
@@ -295,11 +260,11 @@ FUNCTION Graphic9( oCrt, oRMChart, ID_RMC1 )
 
    RETURN NIL
 
-FUNCTION Graphic10( oCrt, oRmChart, ID_RMC1 )
+FUNCTION Graphic10( hWnd, oRmChart, ID_RMC1 )
 
    LOCAL sTemp, aData, aXPoints, aYPoints, nAverage := 0, nL := 0, nT := 0, nR := 0, nB := 0
 
-   oRmChart:CreateChart( oCrt:hWnd, ID_RMC1, 0, 0, MAX_SIZE_ONE, MAX_SIZE_TWO, RMC_COLOR_AZURE, RMC_CTRLSTYLEFLAT, .F., "", "Tahoma", 0, RMC_COLOR_DEFAULT )
+   oRmChart:CreateChart( hWnd, ID_RMC1, 0, 0, MAX_SIZE_ONE, MAX_SIZE_TWO, RMC_COLOR_AZURE, RMC_CTRLSTYLEFLAT, .F., "", "Tahoma", 0, RMC_COLOR_DEFAULT )
    oRmChart:AddRegion(ID_RMC1, 5, 5, -5, -5, "", .F. )
    oRMChart:AddCaption(ID_RMC1, 1, "This is the chart's caption", RMC_COLOR_BLUE, RMC_COLOR_YELLOW, 11, .T. )
    oRMChart:AddGrid(ID_RMC1, 1, RMC_COLOR_BEIGE, .F., 0, 0, 0, 0, RMC_BICOLOR_LABELAXIS)
@@ -321,46 +286,15 @@ FUNCTION Graphic10( oCrt, oRmChart, ID_RMC1 )
 
    RETURN NIL
 
-FUNCTION TstRmChart()
+FUNCTION AMax( x )
 
-   LOCAL oRmChart, oCrt1, oControl
+   LOCAL nVal, oElement
 
-   hb_gtReload( "WVG" )
-   SetMode(40,100)
-   SET WRAP ON
-   SetColor( "W/B" )
-   CLS
-   oRmChart := RMChartClass():New()
-   oCrt1 := wvgTstRectangle():New( , , { -5, -1 }, { -MaxRow(), -MaxCol() } )
-   oCrt1:Create()
+   nVal := x[ 1 ]
+   FOR EACH oElement IN x
+      IF oElement > nVal
+         nVal := oElement
+      ENDIF
+   NEXT
 
-   oControl := wvgTstTrackbar():New()
-   oControl:Create( , , { -1, -1 }, { -2, -90 }, , .F. )
-   oControl:SetValues( , 1, 10 )
-   oControl:Show()
-   oControl:bChanged := { | nOpc | ShowGraphic( nOpc, oCrt1, oRmChart ) }
-   Inkey(0)
-   //oRmChart:DeleteChart(1)
-   //oRMChart:Destroy()
-
-   RETURN NIL
-
-FUNCTION ShowGraphic( nOpc, oCrt1, oRmChart )
-
-   LOCAL nTemp := 1
-
-   DO CASE
-   CASE nOpc == nTemp++ ; Graphic10( oCrt1, oRMChart, 1 )
-   CASE nOpc == nTemp++ ; Graphic1(  oCrt1, oRMChart, 1 )
-   CASE nOpc == nTemp++ ; Graphic2(  oCrt1, oRMChart, 1 )
-   CASE nOpc == nTemp++ ; Graphic3(  oCrt1, oRMChart, 1 )
-   CASE nOpc == nTemp++ ; Graphic4(  oCrt1, oRmChart, 1 )
-   CASE nOpc == nTemp++ ; Graphic5(  oCrt1, oRmChart, 1 )
-   CASE nOpc == nTemp++ ; Graphic6(  oCrt1, oRmChart, 1 )
-   CASE nOpc == nTemp++ ; Graphic7(  oCrt1, oRmChart, 1 )
-   CASE nOpc == nTemp++ ; Graphic8(  oCrt1, oRmChart, 1 )
-   CASE nOpc == nTemp++ ; Graphic9(  oCrt1, oRMChart, 1 )
-   CASE nOpc == nTemp // dummy
-   ENDCASE
-
-   RETURN NIL
+   RETURN nVal
