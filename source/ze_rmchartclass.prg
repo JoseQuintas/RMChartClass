@@ -19,7 +19,7 @@ CREATE CLASS RMChartClass
 
    VAR    hDLL
    VAR    aIdChartList                     INIT {}
-   CLASSVAR ChartID INIT 0
+   CLASSVAR ChartID INIT 1
 
    METHOD Destroy()
    METHOD GetChartID()                     INLINE ::ChartID += 1, AAdd( ::aIdChartList, ::ChartID ), ::ChartID
