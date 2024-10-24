@@ -1,4 +1,4 @@
-rmchart.prg
+testwvg.prg
 -L..
 -I../include
 wvgtest.hbc
